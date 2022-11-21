@@ -1,0 +1,34 @@
+version: "3.8"
+
+networks:
+  otus:
+    driver: bridge
+
+
+services:
+  mongodb:
+    image: mongo:6.0.3
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /data/mongo_data:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    networks:
+      - otus
+
+  mongoexpress:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+        - "8888:8081"
+    depends_on:
+        - mongodb
+    environment:
+        - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017
+    restart: unless-stopped
+    networks:
+      - otus
